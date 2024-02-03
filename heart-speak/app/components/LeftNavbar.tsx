@@ -7,8 +7,9 @@ import image1 from "../../public/assets/image1.png";
 
 const LeftNavbar = () => {
   return (
-    <div className="h-full w-64 bg-gray-800 text-white fixed">
-      <img src="/assets/logo.png"alt="logo" />
+    <div className="h-full w-64 bg-gray-800 bg-opacity-25 text-white fixed">
+      <img src="/assets/logo.png" alt="logo"></img>
+
       <ul>
         <li className="p-4 hover:bg-gray-700">
           <Link href="/">Home</Link>

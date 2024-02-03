@@ -4,6 +4,8 @@ import Image from "next/image";
 import LeftNavbar from "./components/LeftNavbar";
 import JournalEntry from "./components/JournalEntry";
 import WeekCalendar from "./components/WeekCalendar";
+import { Main } from "next/document";
+import MainPage from "./components/MainPage";
 
 export default function Home() {
   return (
@@ -15,11 +17,10 @@ export default function Home() {
 
         {/* JournalEntry centered below WeekCalendar */}
         <div className="flex justify-center w-full">
-          <JournalEntry />
+          {/* <JournalEntry /> */}
+          <MainPage />
         </div>
       </div>
-
-
     </>
   );
 }
