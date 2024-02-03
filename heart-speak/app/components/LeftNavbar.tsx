@@ -3,10 +3,12 @@
 import React from "react";
 import Link from "next/link";
 
+import image1 from "../../public/assets/image1.png";
+
 const LeftNavbar = () => {
   return (
     <div className="h-full w-64 bg-gray-800 text-white fixed">
-      <img src="/image1.png" alt="logo" />
+      <img src="/assets/logo.png"alt="logo" />
       <ul>
         <li className="p-4 hover:bg-gray-700">
           <Link href="/">Home</Link>
