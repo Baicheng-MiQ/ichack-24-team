@@ -1,7 +1,7 @@
 # import constants.py for api_key and other constants
 import constants
 import requests
-from pydub import AudioSegment
+#from pydub import AudioSegment
 
 def get_api_url(model_name):
     return f"https://api-inference.huggingface.co/models/{model_name}"
