@@ -2,7 +2,7 @@ from openai import OpenAI
 import constants
 
 def get_transcription(dir):
-    client = OpenAI(api_key=constants.openai_api_key)
+    client = OpenAI(api_key=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)
 
     audio_file= open(dir, "rb")
     transcript = client.audio.transcriptions.create(

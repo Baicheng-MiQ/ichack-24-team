@@ -89,7 +89,7 @@
                     formData.append('recording', blob, 'audio.ogg'); // You can name the file as needed
 
                     // Send the POST request using fetch with FormData
-                    fetch('/upload2', {
+                    fetch('/upload', {
                         method: 'POST',
                         body: formData // FormData will set the correct content type
                     })

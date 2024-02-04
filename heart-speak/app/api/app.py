@@ -5,8 +5,13 @@ import constants
 import os
 import requests
 from pydub import AudioSegment
+import openai
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+# Enable CORS for all routes and origins
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 ALLOWED_EXTENSIONS = {'wav', 'mp3', 'ogg', 'flac'}
 UPLOAD_FOLDER = './'
@@ -40,6 +45,16 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def get_transcription(dir):
+    client = openai.OpenAI(api_key=constants.openai_api_key)
+
+    audio_file= open(dir, "rb")
+    transcript = client.audio.transcriptions.create(
+        model="whisper-1", 
+        file=audio_file
+    )
+    return transcript
+
 
 @app.route('/')
 def index():
@@ -59,10 +74,11 @@ def upload2():
 
 @app.route('/upload3', methods=['GET', 'POST'])
 def upload3():
-    with open("uploads/audio.ogg", "rb") as file:
+    with open("./audio.ogg", "rb") as file:
         file_bytes = file.read()
-    transcription = audio_sentiment_classification(file_bytes)[0]['text']
-    return render_template("index.html", transcription=transcription)
+    #transcription = audio_sentiment_classification(file_bytes)[0]['text']
+    transcription = get_transcription("./audio.ogg")
+    return jsonify({'text': transcription.text})
 
 @app.route('/key_points', methods=['POST'])
 def key_points():
@@ -95,3 +111,4 @@ def key_points():
 
 if __name__ == "__main__":
     app.run(port=8000, debug=True)
+#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
