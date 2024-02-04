@@ -24,7 +24,7 @@ const WeekCalendar: React.FC<{ onDaySelect: (day: Date) => void }> = ({ onDaySel
           className={`px-4 py-2 cursor-pointer ${
             isSameDay(day, selectedDate)
               ? "bg-blue-500 text-white"
-              : "text-gray-700"
+              : "text-gray-700 bg-white"
           } rounded-full`}
           key={i}
           onClick={() => onDayClick(day)}

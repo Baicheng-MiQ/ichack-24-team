@@ -162,7 +162,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
         </style>
 
         <textarea
-          className="w-full h-96 p-4 border border-gray-300 rounded-md shadow-sm resize-none custom-scroll"
+          className="w-full h-96 p-4 rounded-md shadow-sm resize-none custom-scroll textarea textarea-info text-white"
           placeholder="Type something..."
           value={currentEntry}
           onChange={handleTextChange}
@@ -189,12 +189,13 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
           `}
         </style>
         {notifs.map((notification) => (
-          <div
+          <button
             key={notification.id}
             className="p-4 mb-4 bg-gray-100 rounded-lg shadow"
+            onClick={() => setCurrentEntry((currentEntry) => `${currentEntry}\n\n${notification.message}`)}
           >
             {notification.message}
-          </div>
+          </button>
         ))}
       </aside>
     </div>
