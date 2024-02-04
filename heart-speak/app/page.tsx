@@ -26,7 +26,7 @@ export default function Home() {
       <div className="flex min-h-screen">
         {/* Left side for AudioRecorder, quotes, and Card */}
         <HeartRate/>
-        <div className="w-full md:w-1/2 flex flex-col items-center">
+        <div className="w-full md:w-1/3 flex flex-col items-center">
 
           <AudioRecorder
             highlights={highlights}
@@ -34,7 +34,7 @@ export default function Home() {
             qlst={quoteSentimentLocationTimeArray}
             sqslt={setQuoteSentimentLocationTimeArray}
           />
-          <div className="mt-4 space-y-2">
+          <div className="space-y-2">
             {quoteSentimentLocationTimeArray.length === 0 ? (
               <span className="loading-dots">Loading...</span>
             ) : (
@@ -62,7 +62,7 @@ export default function Home() {
         </div>
 
         {/* Right side for JournalEntry */}
-        <div className="w-full md:w-1/2 flex flex-col items-center justify-start px-6 md:px-20 py-24">
+        <div className="w-full md:w-1/2 flex flex-col items-center justify-start px-2 md:px-20 py-24">
           <JournalEntry notifs={notifs} setNotifs={setNotifs} />
         </div>
       </div>

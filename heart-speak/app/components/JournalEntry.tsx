@@ -194,7 +194,7 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
             className="p-4 mb-4 bg-gray-100 rounded-lg shadow"
             onClick={() => setCurrentEntry((currentEntry) => `${currentEntry}\n\n${notification.message}`)}
           >
-            {notification.message}
+            <p className="text-black">{notification.message}</p>
           </button>
         ))}
       </aside>

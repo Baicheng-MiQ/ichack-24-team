@@ -36,7 +36,7 @@ const Card = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [texts, setTexts] = useState([]); // Initialize as empty, will be filled with API data
-
+  const [isLoading, setIsLoading] = useState(false); // New state to track loading status
   const [isVisible, setIsVisible] = useState(false); // State to control visibility
 
   const handleNext = () => {
@@ -50,6 +50,7 @@ const Card = ({
   };
 
   const fetchAndSetSummary = async () => {
+    setIsLoading(true); // Start loading
     try {
       const summaries = await Promise.all(
         qslta.map(async (item) => {
@@ -81,6 +82,7 @@ const Card = ({
     } catch (error) {
       console.error("Error fetching summaries:", error);
     }
+    setIsLoading(false); // End loading
   };
 
   const handleShow = () => {
@@ -131,14 +133,20 @@ const Card = ({
                   <p className="text-lg text-gray-800 font-medium">
                     {texts[currentIndex]}
                   </p>
-                  <div className="flex mt-4">
-                    <button className="mx-2 px-6 py-2 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 shadow transition duration-150 ease-in-out" onClick={onClickYes}>
-                      ✓ Yes this is how I felt
+                  {isLoading ? <span className="loading-dots"></span>:<div className="flex mt-4">
+                    <button
+                      className="mx-2 px-6 py-2 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 shadow transition duration-150 ease-in-out"
+                      onClick={onClickYes}
+                    >
+                      ✓ Keep
                     </button>
-                    <button className="mx-2 px-6 py-2 bg-red-500 text-white font-semibold rounded-full hover:bg-red-600 shadow transition duration-150 ease-in-out" onClick={onClickNo}>
-                      ✕ Not really
+                    <button
+                      className="mx-2 px-6 py-2 bg-red-500 text-white font-semibold rounded-full hover:bg-red-600 shadow transition duration-150 ease-in-out"
+                      onClick={onClickNo}
+                    >
+                      ✕ Delete
                     </button>
-                  </div>
+                  </div>}
                 </div>
                 <button
                   className="px-4 py-2 bg-gradient-to-l from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500 text-gray-800 font-bold rounded-full shadow-lg"

@@ -130,7 +130,11 @@ def give_summary():
             },
             {
             "role": "user",
-            "content": "Here's what i said during a moment in the day. Briefly describe my emotional state based on the sentiment label and percentage. Provide also the time and place\"- \""
+            "content": "Here's what i said during a moment in the day." \
+                "Briefly describe my emotional state based on the sentiment label."\
+                "Provide also the when (don't include date, just time) and place (only most specific level, no city and country needed))"\
+                "Make it informal, so I can put in my journal straight away."\
+                "\"- \""
             },
 
         ],
