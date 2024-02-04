@@ -1,0 +1,9 @@
+tqdm
+soundfile
+numpy
+matplotlib
+PyWavelets
+pydub
+webrtcvad
+wave
+Flask
