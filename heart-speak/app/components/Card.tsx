@@ -27,7 +27,13 @@ async function sendTranscription(
   return undefined; // Add a return statement for the case when an error occurs
 }
 
-const Card = ({ qslta, setJournalPrompts }: { qslta: any, setJournalPrompts: any }) => {
+const Card = ({
+  qslta,
+  setJournalPrompts,
+}: {
+  qslta: any;
+  setJournalPrompts: any;
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [texts, setTexts] = useState([]); // Initialize as empty, will be filled with API data
 
@@ -68,7 +74,9 @@ const Card = ({ qslta, setJournalPrompts }: { qslta: any, setJournalPrompts: any
       }
 
       setTexts(summaries);
-      setJournalPrompts(summaries.map((summary: string) => ({ id: summary, message: summary })))
+      setJournalPrompts(
+        summaries.map((summary: string) => ({ id: summary, message: summary }))
+      );
       setIsVisible(true); // Show the card after the summaries are fetched
     } catch (error) {
       console.error("Error fetching summaries:", error);
@@ -80,6 +88,32 @@ const Card = ({ qslta, setJournalPrompts }: { qslta: any, setJournalPrompts: any
     setIsVisible(true);
   };
 
+  const onClickYes = () => {
+    {
+      console.log("Yes");
+      handleNext();
+    }
+  };
+
+  const onClickNo = () => {
+    console.log("No");
+    // Remove the current text from the array
+    const updatedTexts = texts.filter((_, index) => index !== currentIndex);
+    setTexts(updatedTexts);
+
+    // Update journal prompts
+    setJournalPrompts(
+      updatedTexts.map((text, index) => ({ id: index, message: text }))
+    );
+
+    // If the current index is the last one, go back to the previous one, otherwise stay at the current index (which now points to the next item after deletion)
+    setCurrentIndex((prevIndex) => {
+      if (prevIndex >= updatedTexts.length) {
+        return Math.max(updatedTexts.length - 1, 0);
+      }
+      return prevIndex;
+    });
+  };
   return (
     <>
       <div className="flex flex-col items-center justify-center pt-10 pb-10">
@@ -98,11 +132,11 @@ const Card = ({ qslta, setJournalPrompts }: { qslta: any, setJournalPrompts: any
                     {texts[currentIndex]}
                   </p>
                   <div className="flex mt-4">
-                    <button className="mx-2 px-6 py-2 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 shadow transition duration-150 ease-in-out">
-                      ✓
+                    <button className="mx-2 px-6 py-2 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 shadow transition duration-150 ease-in-out" onClick={onClickYes}>
+                      ✓ Yes this is how I felt
                     </button>
-                    <button className="mx-2 px-6 py-2 bg-red-500 text-white font-semibold rounded-full hover:bg-red-600 shadow transition duration-150 ease-in-out">
-                      ✕
+                    <button className="mx-2 px-6 py-2 bg-red-500 text-white font-semibold rounded-full hover:bg-red-600 shadow transition duration-150 ease-in-out" onClick={onClickNo}>
+                      ✕ Not really
                     </button>
                   </div>
                 </div>

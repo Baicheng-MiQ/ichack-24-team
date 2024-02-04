@@ -18,6 +18,27 @@ const notifications: Notification[] = [
   },
 ];
 
+const customScrollStyles = {
+  scrollbarWidth: "thin",
+  scrollbarColor: "#4299e1 #e2e8f0", // Use your blue shade for the thumb and track color respectively
+};
+
+const customScrollStylesWebkit = {
+  "&::-webkit-scrollbar": {
+    width: "8px", // Adjust scrollbar width
+    height: "8px", // Adjust scrollbar height for horizontal scroll
+  },
+  "&::-webkit-scrollbar-track": {
+    background: "#e2e8f0", // Background of the track
+    borderRadius: "100px", // Rounded corners of the track
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: "#4299e1", // Your blue color
+    borderRadius: "100px", // Rounded corners of the thumb
+    border: "3px solid #e2e8f0", // Creates padding around the scrollable content
+  },
+};
+
 type JournalEntryProps = {
   notifs: Notification[];
   setNotifs: (notifs: Notification[]) => void;
@@ -83,25 +104,30 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
 
   const handleGetNotifsForThisDay = async () => {
     // Concatenate all notification messages
-    const transcript = notifs.map(notif => notif.message).join(' ');
+    const transcript = notifs.map((notif) => notif.message).join(" ");
 
     try {
       // Send the concatenated messages to the Flask endpoint
-      const response = await axios.post('http://localhost:8000/getJournalDirections', {
-        transcript: transcript
-      });
+      const response = await axios.post(
+        "http://localhost:8000/getJournalDirections",
+        {
+          transcript: transcript,
+        }
+      );
 
       // Assuming the API returns a summary or guidance in the response
       const guidance = response.data; // Adjust based on the actual response structure
       console.log(guidance); // Do something with the guidance, e.g., display it in the UI
-
+      const further = guidance.choices[0].message.content; // Adjust based on the actual response structure
       // Optionally, update the current entry with the guidance received
-    //   setCurrentEntry(currentEntry => `${currentEntry}\n\nGuidance:\n${guidance}`);
+      setCurrentEntry(
+        (currentEntry) => `${currentEntry}\n\nGuidance:\n${further}`
+      );
+      handleSave();
     } catch (error) {
       console.error("Error fetching guidance:", error);
     }
   };
-
 
   return (
     <div className="flex w-full max-w-4xl">
@@ -109,11 +135,36 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
         {/* input area for journaling */}
         <WeekCalendar onDaySelect={handleDaySelect} />
 
+        <style>
+          {`
+        textarea::-webkit-scrollbar {
+          width: 12px;
+        }
+
+        textarea::-webkit-scrollbar-track {
+          background: #f0f1f5;
+          border-radius: 100px;
+        }
+
+        textarea::-webkit-scrollbar-thumb {
+          background-color: #4299e1; /* Scroll thumb color */
+          border-radius: 100px;
+          border: 3px solid #f0f1f5; /* Creates padding around the scroll thumb */
+        }
+
+        /* For Firefox */
+        textarea {
+          scrollbar-width: thin;
+          scrollbar-color: #4299e1 #f0f1f5;
+        }
+      `}
+        </style>
+
         <textarea
-          className="w-full h-96 p-4 border border-gray-300 rounded-md shadow-sm resize-none"
+          className="w-full h-96 p-4 border border-gray-300 rounded-md shadow-sm resize-none custom-scroll"
           placeholder="Type something..."
-          value={currentEntry} // Bind the textarea to the currentEntry state
-          onChange={handleTextChange} // Update currentEntry state when typing
+          value={currentEntry}
+          onChange={handleTextChange}
         ></textarea>
         <button
           className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
@@ -124,7 +175,17 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
       </div>
 
       {/* Notifications side section */}
-      <aside className="w-64 overflow-y-auto p-4 border-gray-200">
+      <aside
+        className="w-64 h-96 overflow-y-auto p-4"
+        style={customScrollStyles}
+      >
+        <style>
+          {`
+            aside::-webkit-scrollbar {${customScrollStylesWebkit["&::-webkit-scrollbar"].width};}
+            aside::-webkit-scrollbar-track {background: ${customScrollStylesWebkit["&::-webkit-scrollbar-track"].background}; border-radius: ${customScrollStylesWebkit["&::-webkit-scrollbar-track"].borderRadius};}
+            aside::-webkit-scrollbar-thumb {background: ${customScrollStylesWebkit["&::-webkit-scrollbar-thumb"].backgroundColor}; border-radius: ${customScrollStylesWebkit["&::-webkit-scrollbar-thumb"].borderRadius}; border: ${customScrollStylesWebkit["&::-webkit-scrollbar-thumb"].border};}
+          `}
+        </style>
         {notifs.map((notification) => (
           <div
             key={notification.id}
@@ -134,10 +195,6 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
           </div>
         ))}
       </aside>
-
-      <div>
-
-      </div>
     </div>
   );
 };
