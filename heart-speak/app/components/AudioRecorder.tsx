@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 
-const AudioRecorder: React.FC = () => {
+const AudioRecorder: React.FC<{ highlights: string[]; setHighlights: React.Dispatch<React.SetStateAction<string[]>> }> = ({ highlights, setHighlights}) => {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
@@ -55,8 +55,11 @@ const AudioRecorder: React.FC = () => {
           },
         }
       );
-      console.log("Transcription:", response.data);
-      setTranscription(response.data.text.text);
+    //   console.log("Transcription:", response.data);
+      setTranscription(response.data.text);
+      const newTranscription = response.data.text;
+      // Update the highlights array with the new transcription
+      setHighlights((prevHighlights) => [...prevHighlights, newTranscription]);
     } catch (error) {
       console.error("Error sending audio to server:", error);
     }
