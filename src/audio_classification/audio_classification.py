@@ -34,7 +34,7 @@ if __name__ == "__main__":
     # flac_audio = AudioSegment.from_file("sample.flac", "flac")
     # flac_audio.export("sampleMp3.mp3", format="mp3")
 
-    with open("Recording.mp3", "rb") as file:
+    with open("test_audio.mp3", "rb") as file:
         file_bytes = file.read()
     print(audio_sentiment_classification(file_bytes))
 
