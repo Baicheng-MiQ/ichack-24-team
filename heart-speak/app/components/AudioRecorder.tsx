@@ -60,8 +60,10 @@ const AudioRecorder: React.FC<{ highlights: string[]; setHighlights: React.Dispa
       const newTranscription = response.data.text;
       // Update the highlights array with the new transcription
       setHighlights((prevHighlights) => [...prevHighlights, newTranscription]);
+      console.log(response.data)
     } catch (error) {
       console.error("Error sending audio to server:", error);
+      
     }
   };
 

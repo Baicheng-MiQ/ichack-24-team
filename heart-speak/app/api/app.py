@@ -56,6 +56,12 @@ def get_transcription(dir):
     return transcript
 
 
+def get_sentiment(dir):
+    with open(dir, "rb") as file:
+        file_bytes = file.read()
+    return audio_sentiment_classification(file_bytes)
+
+
 @app.route('/')
 def index():
     return render_template("index.html", transcription="Original")
@@ -78,7 +84,10 @@ def upload3():
         file_bytes = file.read()
     #transcription = audio_sentiment_classification(file_bytes)[0]['text']
     transcription = get_transcription("./audio.ogg")
-    return jsonify({'text': transcription.text})
+    sentiment_json = query(transcription.text, "lxyuan/distilbert-base-multilingual-cased-sentiments-student")
+
+    return jsonify({'text': transcription.text, 'sentiment': sentiment_json})
+
 
 @app.route('/key_points', methods=['POST'])
 def key_points():
