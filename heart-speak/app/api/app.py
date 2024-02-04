@@ -61,6 +61,18 @@ def get_sentiment(dir):
         file_bytes = file.read()
     return audio_sentiment_classification(file_bytes)
 
+@app.route('/get_heart_rate', methods=['GET'])
+def get_heart_rate():
+    url = "https://dev.pulsoid.net/api/v1/data/heart_rate/latest"
+
+    headers = {
+        "Authorization": constants.pulsoid_api_key,
+        "Content-Type": "application/json",
+    }
+
+    response = requests.get(url, headers=headers)
+    return response.json()
+
 
 @app.route('/')
 def index():
