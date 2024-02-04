@@ -89,6 +89,16 @@ def upload3():
     return jsonify({'text': transcription.text, 'sentiment': sentiment_json})
 
 
+# GET request to https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=
+@app.route('/geolocation', methods=['GET'])
+def geolocation():
+    lat = request.args.get('lat')
+    lng = request.args.get('lng')
+    response = requests.get(f"https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lng}&key={constants.google_maps_api_key}")
+    print(response.text)
+    return response.text
+
+
 @app.route('/key_points', methods=['POST'])
 def key_points():
     # POST request

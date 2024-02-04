@@ -10,23 +10,41 @@ import TopNavbar from "./components/TopNavbar";
 import Card from "./components/Card";
 import AudioRecorder from "./components/AudioRecorder";
 import { useState } from "react";
+import { QuoteSentimentLocationTime } from "./types";
 
 export default function Home() {
   const [highlights, setHighlights] = useState<string[]>([]);
+
+  const [quoteSentimentLocationTimeArray, setQuoteSentimentLocationTimeArray] =
+    useState<QuoteSentimentLocationTime[]>([]);
+
   return (
     <>
       {/* <TopNavbar /> */}
-      <AudioRecorder highlights={highlights} setHighlights={setHighlights} />
-      <div className="mt-4 space-y-2">
-        {highlights.map((highlight, index) => (
+      <AudioRecorder
+        highlights={highlights}
+        setHighlights={setHighlights}
+        qlst={quoteSentimentLocationTimeArray}
+        sqslt={setQuoteSentimentLocationTimeArray}
+      />
+      <div className="flex flex-col items-center justify-center space-y-2 mt-4 w-full">
+        {quoteSentimentLocationTimeArray.map((qslt, index) => (
           <div
             key={index}
-            className="p-4 max-w-prose text-left bg-blue-100 rounded-lg shadow text-black"
+            className="flex flex-col items-center justify-center p-4 max-w-prose text-center bg-blue-100 rounded-lg shadow text-black"
           >
-            {highlight}
+            {qslt.quote}
+            <br />
+            Sentiment: {qslt.sentiment.label}{" "}
+            {(qslt.sentiment.score * 100).toFixed(2)}%
+            <br />
+            Location: {qslt.location}
+            <br />
+            Time: {new Date(qslt.time).toLocaleString()}
           </div>
         ))}
       </div>
+
       <Card />
       <div className="flex flex-col items-center justify-center px-6 md:px-20 py-24 min-h-screen">
         {/* WeekCalendar centered */}

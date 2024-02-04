@@ -1,2 +1,3 @@
 hugging_face_api_key = "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"
 openai_api_key = "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"
+google_maps_api_key= "AIzaSyCPZsuF3NIp080srnG3j0cvXJudVcEd4gg"

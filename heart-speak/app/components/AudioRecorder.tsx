@@ -1,7 +1,54 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
+import { QuoteSentimentLocationTime } from "../types";
 
-const AudioRecorder: React.FC<{ highlights: string[]; setHighlights: React.Dispatch<React.SetStateAction<string[]>> }> = ({ highlights, setHighlights}) => {
+const getCurrentLocation = () => {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        resolve(`Lat: ${latitude}, Long: ${longitude}`);
+      },
+      (error) => {
+        reject("Unable to retrieve your location");
+      }
+    );
+  });
+};
+
+// Function to get the current position
+function getCurrentPosition(options = {}) {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, options);
+  });
+}
+
+// Function to use the obtained coordinates to make an Axios request
+async function fetchGeolocationData() {
+  try {
+    const position = await getCurrentPosition();
+    const { latitude, longitude } = position.coords;
+
+    const mapResponse = await axios.get(`http://localhost:8000/geolocation`, {
+      params: {
+        lat: latitude,
+        lng: longitude,
+      },
+    });
+    const data = mapResponse.data; // The response from the Flask server
+    return data.results[5].formatted_address; // Return the formatted address
+    console.log(data); // Do something with the data
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+const AudioRecorder: React.FC<{
+  highlights: string[];
+  setHighlights: React.Dispatch<React.SetStateAction<string[]>>;
+  qlst: QuoteSentimentLocationTime[];
+  sqslt: React.Dispatch<React.SetStateAction<QuoteSentimentLocationTime[]>>;
+}> = ({ highlights, setHighlights, qlst, sqslt }) => {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
@@ -55,15 +102,45 @@ const AudioRecorder: React.FC<{ highlights: string[]; setHighlights: React.Dispa
           },
         }
       );
-    //   console.log("Transcription:", response.data);
+      //   console.log("Transcription:", response.data);
       setTranscription(response.data.text);
       const newTranscription = response.data.text;
       // Update the highlights array with the new transcription
       setHighlights((prevHighlights) => [...prevHighlights, newTranscription]);
-      console.log(response.data)
+
+      // Get the current location and time
+      fetchGeolocationData().then((location: unknown) => {
+        const currentTime: string = new Date().toISOString(); // ISO string format of current time
+
+        if (response.data.sentiment.error) {
+          sqslt((prev) => [
+            ...prev,
+            {
+              quote: newTranscription,
+              sentiment: {
+                label: "Neutral",
+                score: 0.5,
+              },
+              location: location as string, // Now location is a string like "Lat: xx.xx, Long: yy.yy"
+              time: currentTime, // Current time in ISO string format
+            },
+          ]);
+        } else {
+          sqslt((prev) => [
+            ...prev,
+            {
+              quote: newTranscription,
+              sentiment: response.data.sentiment[0][0],
+              location: location as string, // Now location is a string like "Lat: xx.xx, Long: yy.yy"
+              time: currentTime, // Current time in ISO string format
+            },
+          ]);
+        }
+      });
+
+      console.log(response.data);
     } catch (error) {
       console.error("Error sending audio to server:", error);
-      
     }
   };
 
