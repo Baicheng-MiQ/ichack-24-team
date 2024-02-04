@@ -112,30 +112,15 @@ const AudioRecorder: React.FC<{
       fetchGeolocationData().then((location: unknown) => {
         const currentTime: string = new Date().toISOString(); // ISO string format of current time
 
-        if (response.data.sentiment.error) {
-          sqslt((prev) => [
-            ...prev,
-            {
-              quote: newTranscription,
-              sentiment: {
-                label: "Neutral",
-                score: 0.5,
-              },
-              location: location as string, // Now location is a string like "Lat: xx.xx, Long: yy.yy"
-              time: currentTime, // Current time in ISO string format
-            },
-          ]);
-        } else {
-          sqslt((prev) => [
-            ...prev,
-            {
-              quote: newTranscription,
-              sentiment: response.data.sentiment[0][0],
-              location: location as string, // Now location is a string like "Lat: xx.xx, Long: yy.yy"
-              time: currentTime, // Current time in ISO string format
-            },
-          ]);
-        }
+        sqslt((prev) => [
+          ...prev,
+          {
+            quote: newTranscription,
+            sentiment: response.data.sentiment[0][0],
+            location: location as string, // Now location is a string like "Lat: xx.xx, Long: yy.yy"
+            time: currentTime, // Current time in ISO string format
+          },
+        ]);
       });
 
       console.log(response.data);

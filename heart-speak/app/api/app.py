@@ -98,6 +98,39 @@ def geolocation():
     print(response.text)
     return response.text
 
+@app.route('/getSummary', methods=['POST'])
+def give_summary():
+    client = openai.OpenAI(api_key=constants.openai_api_key)
+    data = request.json  # Get JSON data
+    transcript = data.get('transcript', None)
+    print(transcript)
+
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {
+            "role": "system",
+            "content": "You are a summary bot. Every message you give should be addressed to 'You'"
+            },
+            {
+            "role": "user",
+            "content": f"{transcript}"
+            },
+            {
+            "role": "user",
+            "content": "Here's what i said during a moment in the day. Briefly describe my emotional state based on the sentiment label and percentage. Provide also the time and place\"- \""
+            },
+
+        ],
+        temperature=0.3,
+        max_tokens=100,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    print(response)
+    return response.json()
+
 
 @app.route('/key_points', methods=['POST'])
 def key_points():

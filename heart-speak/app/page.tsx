@@ -45,7 +45,7 @@ export default function Home() {
         ))}
       </div>
 
-      <Card />
+      <Card qslta={quoteSentimentLocationTimeArray}/>
       <div className="flex flex-col items-center justify-center px-6 md:px-20 py-24 min-h-screen">
         {/* WeekCalendar centered */}
         <div className="flex justify-center w-full mb-12"></div>
