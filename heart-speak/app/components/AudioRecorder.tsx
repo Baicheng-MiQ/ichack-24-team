@@ -16,6 +16,29 @@ const getCurrentLocation = () => {
   });
 };
 
+// Function to perform the Axios request
+async function fetchHeartRateData() {
+  const config = {
+    method: "get",
+    url: "https://dev.pulsoid.net/api/v1/data/heart_rate/latest",
+    headers: {
+      Authorization: "Bearer d486ae2c-6b21-4f07-a9e3-3942130e9aea",
+      "Content-Type": "application/json",
+    },
+  };
+
+  axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+}
+
+// Call fetchHeartRateData every second
+setInterval(fetchHeartRateData, 10000);
+
 // Function to get the current position
 function getCurrentPosition(options = {}) {
   return new Promise((resolve, reject) => {
