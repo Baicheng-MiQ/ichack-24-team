@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import WeekCalendar from "./WeekCalendar";
 import { EntryPromptsPair, JournalEntryType, Notification } from "../types";
+import Card from "./Card";
 
 const notifications: Notification[] = [
   { id: 1, message: "Start by detailing what made you happy the morning" },
