@@ -57,6 +57,8 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
     }
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleDaySelect = (day: Date) => {
     setSelectedDate(day);
     const entry = entriesAndNotifications.find(
@@ -103,11 +105,10 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
   };
 
   const handleGetNotifsForThisDay = async () => {
-    // Concatenate all notification messages
-    const transcript = notifs.map((notif) => notif.message).join(" ");
+    setIsLoading(true); // Start loading
 
+    const transcript = notifs.map((notif) => notif.message).join(" ");
     try {
-      // Send the concatenated messages to the Flask endpoint
       const response = await axios.post(
         "http://localhost:8000/getJournalDirections",
         {
@@ -115,17 +116,17 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
         }
       );
 
-      // Assuming the API returns a summary or guidance in the response
       const guidance = response.data; // Adjust based on the actual response structure
-      console.log(guidance); // Do something with the guidance, e.g., display it in the UI
       const further = guidance.choices[0].message.content; // Adjust based on the actual response structure
-      // Optionally, update the current entry with the guidance received
       setCurrentEntry(
         (currentEntry) => `${currentEntry}\n\nGuidance:\n${further}`
       );
+
       handleSave();
     } catch (error) {
       console.error("Error fetching guidance:", error);
+    } finally {
+      setIsLoading(false); // Stop loading regardless of outcome
     }
   };
 
@@ -167,10 +168,11 @@ const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
           onChange={handleTextChange}
         ></textarea>
         <button
-          className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-blue-300"
           onClick={handleGetNotifsForThisDay}
+          disabled={isLoading} // Disable button when loading
         >
-          Get More Guidance
+          {isLoading ? "Loading..." : "Get More Guidance"}
         </button>
       </div>
 

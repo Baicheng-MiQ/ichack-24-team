@@ -122,7 +122,7 @@ def give_summary():
         messages=[
             {
             "role": "system",
-            "content": "You are a summary bot. Every message you give should be addressed as if you are reflecting on the day."
+            "content": "You are a summary bot. Every message you give should be addressed as if you are recounting the day. Keep it simple."
             },
             {
             "role": "user",

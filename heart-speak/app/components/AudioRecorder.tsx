@@ -16,15 +16,13 @@ const getCurrentLocation = () => {
   });
 };
 
-// Function to perform the Axios request
-async function fetchHeartRateData() {
+
+// Function to perform the Axios request to your Flask app's endpoint
+function fetchHeartRateDataFromFlask() {
   const config = {
-    method: "get",
-    url: "https://dev.pulsoid.net/api/v1/data/heart_rate/latest",
-    headers: {
-      Authorization: "Bearer d486ae2c-6b21-4f07-a9e3-3942130e9aea",
-      "Content-Type": "application/json",
-    },
+    method: 'get',
+    url: 'http://localhost:8000/get_heart_rate',
+    // No need to set headers here unless your Flask app requires them
   };
 
   axios(config)
@@ -36,8 +34,9 @@ async function fetchHeartRateData() {
     });
 }
 
-// Call fetchHeartRateData every second
-setInterval(fetchHeartRateData, 10000);
+// Call fetchHeartRateDataFromFlask every second
+setInterval(fetchHeartRateDataFromFlask, 10000);
+
 
 // Function to get the current position
 function getCurrentPosition(options = {}) {
