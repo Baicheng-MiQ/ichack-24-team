@@ -1,17 +1,12 @@
-"use client";
-
+"use client"
 import React, { useState } from "react";
 import { format, startOfWeek, addDays, getWeek, isSameDay } from "date-fns";
 
-interface WeekCalendarProps {
-  onDaySelect: (day: Date) => void;
-}
-
-const WeekCalendar: React.FC<WeekCalendarProps> = ({onDaySelect}) => {
+const WeekCalendar: React.FC<{ onDaySelect: (day: Date) => void }> = ({ onDaySelect }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const onDayClick = (day: any) => {
+  const onDayClick = (day: Date) => {
     setSelectedDate(day);
     onDaySelect(day);
   };
@@ -19,7 +14,8 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({onDaySelect}) => {
   const renderDays = () => {
     const dateFormat = "EEE";
     const days = [];
-    const startDate = startOfWeek(currentDate);
+    // Adjust startOfWeek to make the week start on Monday
+    const startDate = startOfWeek(currentDate, { weekStartsOn: 1 });
 
     for (let i = 0; i < 7; i++) {
       const day = addDays(startDate, i);
@@ -43,7 +39,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({onDaySelect}) => {
 
   return (
     <div className="flex flex-col items-center space-x-4 p-4">
-      <div className="font-semibold mb-4">Week {getWeek(currentDate)}</div>
+      <div className="font-semibold mb-4">Week {getWeek(currentDate, { weekStartsOn: 1 })}</div>
       {renderDays()}
     </div>
   );

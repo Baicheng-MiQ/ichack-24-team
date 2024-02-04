@@ -27,7 +27,7 @@ async function sendTranscription(
   return undefined; // Add a return statement for the case when an error occurs
 }
 
-const Card = ({ qslta }) => {
+const Card = ({ qslta, setJournalPrompts }: { qslta: any, setJournalPrompts: any }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [texts, setTexts] = useState([]); // Initialize as empty, will be filled with API data
 
@@ -68,6 +68,7 @@ const Card = ({ qslta }) => {
       }
 
       setTexts(summaries);
+      setJournalPrompts(summaries.map((summary: string) => ({ id: summary, message: summary })))
       setIsVisible(true); // Show the card after the summaries are fetched
     } catch (error) {
       console.error("Error fetching summaries:", error);
@@ -81,13 +82,13 @@ const Card = ({ qslta }) => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+      <div className="flex flex-col items-center justify-center pt-10 pb-10">
         {isVisible && ( // This will only render the content if isVisible is true
           <div className="flex items-center">
-            <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+            <div className="flex flex-col items-center justify-center n ">
               <div className="flex items-center">
                 <button
-                  className="px-4 py-2 bg-gradient-to-r from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500 text-gray-800 font-bold rounded-full shadow-lg"
+                  className="px-4 py-2 text-gray-800 font-bold rounded-full shadow-lg"
                   onClick={handlePrev}
                 >
                   &#8592;
@@ -118,10 +119,10 @@ const Card = ({ qslta }) => {
 
         {!isVisible && ( // This will render the "Show" button if isVisible is false
           <button
-            className="px-4 py-2 bg-blue-500 text-white font-bold rounded-full shadow-lg hover:bg-blue-600"
+            className="px-4 py-4 bg-blue-500 text-white font-bold rounded-full shadow-lg hover:bg-blue-600"
             onClick={handleShow} // Set isVisible to true when button is clicked
           >
-            Show
+            End Day and Begin Journalling :)
           </button>
         )}
       </div>

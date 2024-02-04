@@ -131,6 +131,39 @@ def give_summary():
     print(response)
     return response.json()
 
+@app.route('/getJournalDirections', methods=['POST'])
+def getJournalDirections():
+    client = openai.OpenAI(api_key=constants.openai_api_key)
+    data = request.json  # Get JSON data
+    transcript = data.get('transcript', None)
+    print(transcript)
+
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {
+            "role": "system",
+            "content": "You are a bot that assists in end of day journalling. Every message you give should be addressed to 'You'"
+            },
+            {
+            "role": "user",
+            "content": f"{transcript}"
+            },
+            {
+            "role": "user",
+            "content": "Here is a set of journalling topics addressed to the user 'You'. Guide me through these topics in a journalling session.\"- \""
+            },
+
+        ],
+        temperature=0.3,
+        max_tokens=1000,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    print(response)
+    return response.json()
+
 
 @app.route('/key_points', methods=['POST'])
 def key_points():

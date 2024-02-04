@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import WeekCalendar from "./WeekCalendar";
 import { EntryPromptsPair, JournalEntryType, Notification } from "../types";
 import Card from "./Card";
+import axios from "axios";
 
 const notifications: Notification[] = [
   { id: 1, message: "Start by detailing what made you happy the morning" },
@@ -17,16 +18,22 @@ const notifications: Notification[] = [
   },
 ];
 
-const JournalEntry: React.FC = () => {
+type JournalEntryProps = {
+  notifs: Notification[];
+  setNotifs: (notifs: Notification[]) => void;
+};
+
+const JournalEntry: React.FC<JournalEntryProps> = ({ notifs, setNotifs }) => {
   const [entriesAndNotifications, setEntriesAndNotifications] = useState<
     EntryPromptsPair[]
   >([]);
-  const [notifs, setNotifs] = useState<Notification[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [currentEntry, setCurrentEntry] = useState<string>("");
 
   const getNotifs = () => {
-    setNotifs(notifications);
+    if (!(notifs.length === 0)) {
+      setNotifs(notifications);
+    }
   };
 
   const handleDaySelect = (day: Date) => {
@@ -74,19 +81,27 @@ const JournalEntry: React.FC = () => {
     }
   };
 
-  const handleGetNotifsForThisDay = () => {
-    getNotifs();
-    const newEntry: EntryPromptsPair = {
-      id: entriesAndNotifications.length + 1,
-      entry: {
-        id: entriesAndNotifications.length + 1,
-        date: selectedDate,
-        content: currentEntry,
-      },
-      prompts: notifs,
-    };
-    setEntriesAndNotifications([...entriesAndNotifications, newEntry]);
+  const handleGetNotifsForThisDay = async () => {
+    // Concatenate all notification messages
+    const transcript = notifs.map(notif => notif.message).join(' ');
+
+    try {
+      // Send the concatenated messages to the Flask endpoint
+      const response = await axios.post('http://localhost:8000/getJournalDirections', {
+        transcript: transcript
+      });
+
+      // Assuming the API returns a summary or guidance in the response
+      const guidance = response.data; // Adjust based on the actual response structure
+      console.log(guidance); // Do something with the guidance, e.g., display it in the UI
+
+      // Optionally, update the current entry with the guidance received
+    //   setCurrentEntry(currentEntry => `${currentEntry}\n\nGuidance:\n${guidance}`);
+    } catch (error) {
+      console.error("Error fetching guidance:", error);
+    }
   };
+
 
   return (
     <div className="flex w-full max-w-4xl">
@@ -104,7 +119,7 @@ const JournalEntry: React.FC = () => {
           className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
           onClick={handleGetNotifsForThisDay}
         >
-          Get Notifs
+          Get More Guidance
         </button>
       </div>
 
@@ -119,6 +134,10 @@ const JournalEntry: React.FC = () => {
           </div>
         ))}
       </aside>
+
+      <div>
+
+      </div>
     </div>
   );
 };

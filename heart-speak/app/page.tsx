@@ -10,13 +10,14 @@ import TopNavbar from "./components/TopNavbar";
 import Card from "./components/Card";
 import AudioRecorder from "./components/AudioRecorder";
 import { useState } from "react";
-import { QuoteSentimentLocationTime } from "./types";
+import { QuoteSentimentLocationTime, Notification} from "./types";
 
 export default function Home() {
   const [highlights, setHighlights] = useState<string[]>([]);
 
   const [quoteSentimentLocationTimeArray, setQuoteSentimentLocationTimeArray] =
     useState<QuoteSentimentLocationTime[]>([]);
+  const [notifs, setNotifs] = useState<Notification[]>([]);
 
   return (
     <>
@@ -45,14 +46,15 @@ export default function Home() {
         ))}
       </div>
 
-      <Card qslta={quoteSentimentLocationTimeArray}/>
+      <Card qslta={quoteSentimentLocationTimeArray} setJournalPrompts={setNotifs}/>
+
       <div className="flex flex-col items-center justify-center px-6 md:px-20 py-24 min-h-screen">
         {/* WeekCalendar centered */}
         <div className="flex justify-center w-full mb-12"></div>
 
         {/* JournalEntry centered below WeekCalendar */}
         <div className="flex justify-center w-full">
-          <JournalEntry />
+          <JournalEntry notifs={notifs} setNotifs={setNotifs}/>
           {/* <MainPage /> */}
         </div>
       </div>
